@@ -1,91 +1,157 @@
-\documentclass{tuftebook}
+% ===================================================================
+% DOCUMENT CLASS
+% ===================================================================
+\documentclass[twoside]{tufte-book}
 
-% Font and Encoding
-\usepackage[T1]{fontenc}        % Font encoding
-\usepackage[utf8]{inputenc}     % Input encoding
-\usepackage{mlmodern}           % Latin Modern font
 
-% Math and Symbols
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{amsfonts}
-\usepackage{mathtools}
-\usepackage{physics}            % For physics notation
-\usepackage{amsthm}             % For theorems and proofs
-\usepackage{cancel}             % For canceling terms in math
+% Encoding and Font
+\usepackage{fontenc}      % Output font encoding (T1 is important for font rendering)
+\usepackage[utf8]{inputenc}     % Input text encoding
+% ACM Font Configuration: Libertine for text, Inconsolata for mono, newtxmath for math
+\usepackage[tt=false, type1=true]{libertine}
+\usepackage[varqu]{zi4}         % Inconsolata for monospaced font
+\usepackage[libertine]{newtxmath}
 
-% Table and Formatting
-\usepackage{booktabs}           % Better tables
-\usepackage{caption}            % Customizing captions
-\usepackage{float}              % Improved interface for floating objects
-\usepackage{tabularx}           % Tables with flexible column widths
-\usepackage{array}              % Extra functionality for tables
-\usepackage{siunitx}            % For units and numerical data
+% Mathematical Typesetting 
+\usepackage{amsmath}            % Core math functionalities
+\usepackage{amssymb}            % Additional math symbols
+\usepackage{amsfonts}           % AMS fonts
+\usepackage{mathtools}          % Enhancements for amsmath
+\usepackage{physics}            % Physics notations (useful for vectors, etc.)
 
-% Figures and Colors
-\usepackage{pdfpages}
-\usepackage{graphicx}           % For including graphics
-\usepackage{xkcdcolors}         % XKCD colors
-\usepackage{tikz}               % For creating graphics programmatically
-\usepackage{tcolorbox}          % For colored boxes
+% Graphics, Color, and Code
+\usepackage{graphicx}           % For including images
+\usepackage{xcolor}             % For color definitions
+\usepackage{listings}           % For typesetting code blocks
+\usepackage{algorithm}          % For algorithm environments
+\usepackage{algpseudocode}      % For pseudocode inside algorithms
 
-% Algorithm and Listings
-\usepackage{algorithm}
-\usepackage[noend]{algpseudocode} % For algorithms
-\usepackage{listings}           % For source code listings
-\usepackage[table,xcdraw]{xcolor} % Color support for tables and code
+% Tables and Units
+\usepackage{booktabs}           % For professional-quality tables
+\usepackage{multicol}           % For creating multi-column layouts (used for bibliography)
+\usepackage{siunitx}            % For typesetting units
 
-% Hyperlinks and Metadata
-\usepackage{hyperref}           % For hyperlinks
+% Page Layout, Headers, and Included PDFs
+\usepackage{pdfpages}           % For including pages from external PDFs
+\usepackage{fancyhdr}           % For customizing headers and footers
+\usepackage{geometry}           % For modifying page geometry on the fly
+
+% Boxed Theorems
+\usepackage{tcolorbox}
+\tcbuselibrary{theorems,breakable}
+
+% Hyperlinks and Bibliography
+\usepackage{hyperref}           % For hyperlinks (must be loaded late)
 \hypersetup{
-    colorlinks=true,            % Colored links
-    linkcolor=blue,             % Color of internal links
-    citecolor=blue,             % Color of citation links
-    filecolor=magenta,          % Color of file links
-    urlcolor=blue               % Color of URL links
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan
+}
+% Use biblatex for bibliography, as required by the tufte-latex style.
+% 'biber' is the modern backend. 'style=numeric' for numbered citations.
+\usepackage[style=numeric, backend=biber]{biblatex}
+\addbibresource{biblio.bib} % Specify the bibliography file
+
+% ===================================================================
+% CUSTOM HEADER CONFIGURATION
+% ===================================================================
+\pagestyle{fancy}
+\fancyhf{} % Clear all header and footer fields
+\renewcommand{\headrulewidth}{0.4pt} % Add a thin rule under the header
+\fancyhead{\thepage} % Page number on Left-Even, Right-Odd (outer edges)
+\fancyhead{\nouppercase{\leftmark}} % Chapter on Right-Even (inner edge)
+\fancyhead[LO]{\nouppercase{\rightmark}} % Section on Left-Odd (inner edge)
+
+% ===================================================================
+% DYNAMIC MARGIN SOLUTION: The 'standardlayout' Environment
+% ===================================================================
+\newenvironment{standardlayout}{%
+  \newgeometry{
+    textwidth=\dimexpr\textwidth+\marginparwidth+\marginparsep\relax,
+    marginparwidth=0pt,
+    marginparsep=0pt
+  }%
+}{%
+  \restoregeometry
 }
 
-% Additional Features
-\usepackage{microtype}          % Microtypographical improvements
-\usepackage{epigraph}           % For epigraphs
-\usepackage{nicematrix}         % For nice matrices
-\usepackage{empheq}             % Boxing equations
-\usepackage{lipsum}             % Filler text
+% ===================================================================
+% THEOREM AND DEFINITION STYLES (BOXED)
+% ===================================================================
+% We use the tcolorbox package for creating elegant, breakable boxes.
+\tcbset{
+  theoremstyle/.style={
+    breakable,              % Allows boxes to break across pages
+    colback=black!4!white,  % A very light grey background
+    colframe=black!30!white,% A light grey frame/border
+    fonttitle=\bfseries,    % Bold title font
+    arc=1mm,                % Slightly rounded corners
+    boxrule=0.5pt,          % A thin border line
+  }
+}
 
-% Chapter Formatting
-\usepackage[Sonny]{fncychap}    % Fancy chapter headings
-\numberwithin{equation}{chapter} % Number equations within chapters
-\frenchspacing                   % Use French spacing
+% Create the new boxed theorem environments using the style defined above.
+\newtcbtheorem[number within=chapter]{theorem}{Theorem}{theoremstyle}{thm}
+\newtcbtheorem[use counter from=theorem]{lemma}{Lemma}{theoremstyle}{lem}
+\newtcbtheorem[use counter from=theorem]{proposition}{Proposition}{theoremstyle}{prop}
+\newtcbtheorem[use counter from=theorem]{corollary}{Corollary}{theoremstyle}{cor}
+\newtcbtheorem[use counter from=theorem]{definition}{Definition}{
+  theoremstyle,
+  fontupper=\normalfont
+}{defn}
+\newtcbtheorem[use counter from=theorem]{example}{Example}{
+  theoremstyle,
+  fontupper=\normalfont
+}{ex}
 
-\usepackage{theorem}
 
+
+
+
+
+
+% ===================================================================
+% DOCUMENT BEGINS
+% ===================================================================
 \begin{document}
 
-\includepdf[pages=1, fitpaper=true]{images/NotesCover.pdf}
+% Custom PDF Title Page
+\begin{titlepage}
+    \includepdf[pages=1, pagecommand=\thispagestyle{empty}]{images/NotesCover.pdf}
+\end{titlepage}
 
+% Table of Contents
+\frontmatter % Use Roman numerals for front matter
 \tableofcontents
-\pagestyle{plain}
-\input{chapters/day1}
-\input{chapters/day2}
-\input{chapters/day3}
-\input{chapters/day4}
-\input{chapters/day5}
+\mainmatter % Switch to Arabic numerals for the main content
 
-\input{chapters/Proj1 - MDs (Nicholas Sharp)}
-\input{chapters/Proj2 - SDFs (Odet-Silvia)}
-\input{chapters/Proj3 - INR (Zhang-Marschner)}
-\input{chapters/Proj4 - Eigenvalues (Yingying Yu)}
+% ===================================================================
+% MAIN CONTENT - CHAPTERS
+% ===================================================================
+\include{chapters/day1}
+\include{chapters/day2}
+\include{chapters/day3}
+\include{chapters/day4}
+\include{chapters/day5}
 
-\input{chapters/Exercises1}
-\input{chapters/Exercises2}
-\input{chapters/Exercises3}
+\include{chapters/Exercises1}
+\include{chapters/Exercises2}
+\include{chapters/Exercises3}
 
-\input{chapters/esoterica}
+% ===================================================================
+% APPENDIX
+% ===================================================================
+\appendix % This command switches chapter numbering to A, B, C...
+\include{chapters/esoterica} % Example appendix chapter
 
-\footnotesize
-\twocolumn
-\bibliographystyle{acm}
-\bibliography{biblio1}
-\onecolumn
+% ===================================================================
+% BIBLIOGRAPHY
+% ===================================================================
+
+\begin{multicols}{2}
+\printbibliography
+\end{multicols}
 
 \end{document}
