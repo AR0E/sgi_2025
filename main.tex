@@ -38,6 +38,7 @@
 
 % Boxed Theorems
 \usepackage{tcolorbox}
+\setcounter{secnumdepth}{3}
 \tcbuselibrary{theorems,breakable}
 
 % Hyperlinks and Bibliography
@@ -52,7 +53,8 @@
 % Use biblatex for bibliography, as required by the tufte-latex style.
 % 'biber' is the modern backend. 'style=numeric' for numbered citations.
 \usepackage[style=numeric, backend=biber]{biblatex}
-\addbibresource{biblio.bib} % Specify the bibliography file
+\bibliography{biblio}
+ % Specify the bibliography file
 
 % ===================================================================
 % CUSTOM HEADER CONFIGURATION
