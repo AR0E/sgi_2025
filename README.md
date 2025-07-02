@@ -1,2 +1,2 @@
-# sgi_2025
-The (unofficial) contributions booklet for SGI 2025!
+# SGI 2025 Course Handbook
+The (unofficial) contributions handbook for SGI 2025!
