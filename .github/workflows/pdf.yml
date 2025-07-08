@@ -13,7 +13,7 @@ jobs:
     env:
       # one filename per line, including directory if in a subdirectory
       FILES: |
-        note.tex
+        main.tex
     steps:
       - name: Checkout
         uses: actions/checkout@v4
