@@ -4,4 +4,4 @@
 The (unofficial) contributions handbook for SGI 2025!
 
 
-[![pdf](https://img.shields.io/badge/pdf-note-green)](https://github.com/ToyTeX/SGI-Book_2025/build/main.pdf)
+[![pdf](https://img.shields.io/badge/pdf-note-green)](https://github.com/ToyTeX/SGI-Book_2025/blob/build/main.pdf)
