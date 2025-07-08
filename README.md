@@ -1,4 +1,4 @@
-[![pdf](https://github.com/AR0E/sgi_2025/blob/main/SGI_gitBanner.svg | width = 80)](https://github.com/ToyTeX/SGI-Book_2025/actions/workflows/pdf.yml)
+[![pdf](https://github.com/AR0E/sgi_2025/blob/main/SGI_gitBanner.svg)](https://github.com/ToyTeX/SGI-Book_2025/actions/workflows/pdf.yml)
 
 # SGI 2025 Course Handbook
 The (unofficial) contributions handbook for SGI 2025!
