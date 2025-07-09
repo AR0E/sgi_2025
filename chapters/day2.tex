@@ -189,3 +189,213 @@ obliterates connectivity information in return for a completely
 isometric mapping to the UV space.
 
 \subsection{Optimization}
+
+\section{Level of Detail (\emph{Nicole Feng})}
+
+There's a great deal of difficulty in rendering models
+with a lot of details, due to the computational cost.
+This originally motivated artists to produce 
+different versions of the same object in different
+levels of detail, that is, number of polygons,
+quality of textures, to save the performance.
+
+There are several issues with this however. The 
+first of course is the sheer volume of work; in
+some video games, we have thousands of assets. 
+We'd have to manually produce three or four versions
+of each asset if we'd like to generate accurate LODs
+for each one, which is unfeasible.
+
+Further, one can have many transition artifacts
+between the low and high LOD versions of the same
+object, known as \emph{pop-in}. beyond
+straightforward videogames, any kind of
+application that consumes large amount of memory
+require LOD systems for efficient computing,
+in MRI for example.
+
+It would be of our interest to somehow make this
+process automatic and very much seamless.
+
+\begin{itemize}
+    - What does detail mean?
+
+\end{itemize}
+
+Taylor expansions and fast multipole methods
+can be seen as LODs.
+
+\subsection{1D curves}
+
+Let's suppose we have a polyline
+$\gamma(t)$ given by some sequence of points
+$S$, which contains the vertex positions 
+and the connectivity information.
+
+Let's produce a low detail version of the
+polyline. Intuitively, we could remove one 
+of the vertices or the edges in some kind 
+of choice heuristics in order to make it
+have less points whilst preserving its 
+geometry. We then need some metric to 
+tell us \emph{what} exactly is
+a similar curve, an error metric.
+
+
+Minimizing squared distance
+
+A fairly simple error metric is to determine
+the average squared distance from the original
+polyline.
+
+
+
+We retain information from the original
+curve, as reference to further iterations.
+
+\subsubsection{A smooth to discrete example of LOD}
+
+Suppose we had a curve $A(t):[0,1] \rightarrow \RR^n$,
+and we want to build an \emph{approximate} polyline curve
+$B(t)$. We want to make our discrete points have the nearest
+look to our original curve $A(t)$. 
+
+\spa
+
+As such, we must choose an \emph{error metric} measuring how
+similar the two curves are, and make an algorithm that produces a
+curve that minimizes this metric. A basic one is simply to measure
+the total \emph{area} separating the approximate and real curve,
+and attempt to minimize it.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\linewidth]{images/error1.png}
+    \caption{Basic error metric}
+\end{figure}
+
+\spa
+
+The \emph{distance} between the polyline and the curve is
+defined as the \emph{Chamfer Distance} \cite{chamfer1}
+of the two sets of points $ch(A,B)$. One can also use the analogous
+\emph{Hausdorff Distance} \cite{chamfer3}; ultimately, both
+look at the the minimizing or maximizing, respectively, distances between
+the two sets. Along the curve integral one can imagine the Hausdorff
+metric produces a \emph{mean} value for the error, whilst the Chamfer
+metric produces an absolute amount.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\linewidth]{images/chamfer1.png}
+    \caption{Chamfer distance produces,
+    among evenly sampled points, circles.
+    The nearest points are the radius of
+    said circles that touch the curve $A(t)$.}
+\end{figure}
+
+Where the element $d(A,B)$ is indeed the Euclidean distance.
+It makes sense then that the associated integral
+becomes a running integral over the Chamfer distance
+of the two curves:
+
+\begin{align*}
+    \text{(Total error)} = \int_{[0,1]} ch(A,B) 
+\end{align*}
+
+And we'd like to readjust and resample $B(t)$ to
+minimize this cost functional. Let us discuss, besides Chamfer, some 
+other useful error metrics.
+
+\subsection{Different error distances}
+
+Let $X$ be a compact, smooth submanifold in $\RR^3$ 
+that inherits the Euclidean metric from $\R^3$, i.e., a closed
+surface (like a sphere or a torus) or surface with boundary (like 
+a purse). We consider two measures of the \emph{dissimilarity} between 
+two sets and their numerical proxies, and apply these two 
+measures for $X$ and its deformed mesh $f(M)$ in particular. The 
+two measures of dissimilarity are given below.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{images/frechet1.png}
+    \caption{The Fréchet Distance is nothing but the distance between
+    points that have the same parametrization.}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\linewidth]{images/frechet2.png}
+    \caption{The \emph{free-space diagram} associated to a 
+    8-unit distance contour around the curves and the respective
+    red intersection.}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\linewidth]{images/frechet3.png}
+    \caption{Two intersecting squiggly curves.}
+    \label{fig:enter-label}
+\end{figure}
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\linewidth]{images/frechet4.png}
+    \caption{Evaluation of "nearest-point" Chamfer distance along the
+    two squiggly curves.}
+\end{figure}
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\linewidth]{images/frechet5.png}
+    \caption{Proper, parametrized Frenet distance between curves, now
+    showcasing that since the parameters are all mismatched, one can get
+    shape information.}
+\end{figure}
+
+
+\subsection{Polyline algorithm}
+
+Once again, we have a curve $A(t)$ that we'd like to approximate
+by a polyline $B(t)$; we'll have data composed entirely of simply connected
+points in the matrix $\bf{V}$ with some "direction information" 
+stored in the order $\bf{v_i\rightarrow v_{i+1}}$ of rows.
+
+\spa
+
+If our space is $n-$dimensional we'd have $n$ columns to 
+$\bf{V}$, for now we'll only worry about 3, so we have a
+$\bf{V}$ of size $(k \times 3)$, where $k$ is the number of
+vertices for $B(t)$.
+
+
+
+\subsection{2D surface examples}
+
+We once again have a triplet $(\mathbf{M,E,V})$
+containing the vertex positions and connectivity
+information. We can extend the same quadric
+error metric approach to the surface.
+
+
+\subsection{Mapping between levels}
+
+\emph{Continous LOD} generates a data structure 
+to interpolate between different LODs in such a way
+that it looks seamless. 
+
+\begin{align}
+    \sum \mathcal{O}
+\end{align}
+
+Whenever we do a simplification to a mesh
+containing a texture, we need to update the
+colors in a way that doesn't distort the colors.
+
+\subsubsection{Multigrid/resolution methods}
+
+
