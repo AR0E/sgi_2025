@@ -253,6 +253,7 @@ polyline.
 We retain information from the original
 curve, as reference to further iterations.
 
+\subsubsection{A smooth to discrete example of LOD}
 
 Suppose we had a curve $A(t):[0,1] \rightarrow \RR^n$,
 and we want to build an \emph{approximate} polyline curve
@@ -316,139 +317,6 @@ two sets and their numerical proxies, and apply these two
 measures for $X$ and its deformed mesh $f(M)$ in particular. The 
 two measures of dissimilarity are given below.
 
-\subsubsection{\emph{Gromov-Hausdorff distance}}
-
-The normal \emph{Hausforff distance} is the largest of
-all minimum (Chamfer) distances along two curves.
-That is, if we were to pick all the little Chamfer
-distances across all points, we'd pick the largest one
-as our Hausdorff distance:
-
-\begin{align*}
-    d_{\mathcal{H}}^Z(A, B)&=\max \left(\sup _{a \in A} 
-    d_Z(a, B), \sup _{b \in B} d_Z(b, A)\right) \\
-    \\
-    &= 
-    \max \left (
-\begin{pmatrix}
-\text{Point in A}\\
-\text{called }a \\
-\text{nearest to B}
-\end{pmatrix},
-\begin{pmatrix}
-\text{Point in B}\\
-\text{called }b \\
-\text{nearest to A}
-\end{pmatrix}
-\right )
-\end{align*}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.8\linewidth]{images/hausdorff1.png}
-    \caption{The Hausdorff length is simply the largest of all
-    Chamfer distances between the two curves.}
-\end{figure}
-
-The \emph{Gromov-Hausdorff} distance is the infimum
-or smallest of all selected Hausdorff distance
-along chunks of the curve:
-
-\begin{align*}
-    d_{\mathcal{G H}}(X, Y) &=\inf_{Z, g_X, g_Y} 
-    d_{\mathcal{H}}^Z(X, Y) \\
-\end{align*}
-
-Where $g_X: X \rightarrow Z$ and $g_Y: Y \rightarrow Z$ are 
-isometric embeddings into the metric space $Z$.
-In this case, the metric of $X$ and the deformed mesh $f(M)$ 
-are the same as the metric for $Z=\RR^3$. 
-
-\spa
-
-Thus, $\forall$ isometry $g:X\to f(M)$, $\exists$ isometry 
-$\varphi: \RR^3 \to \RR^3$, 
-i.e., $\varphi \in \operatorname{Iso}(\RR^3)=\mathbb{E}^3$, 
-such that $\varphi$ restricts to $f: \varphi|_X=g$. This similarly holds for isometries from 
-$f(M)$ to $X$. Therefore,
-
-\begin{align*}
-    d_{\mathcal{G H}}(X, f(M)):=\inf_{\varphi \in \mathbb{E}^3} d_{\mathcal{H}}^{\R^3}(\varphi(X), f(M))
-\end{align*}
-
-This approach has the nice property that if the points of the mesh $M_n$ 
-with $|M_n|=n$ is i.i.d. uniformly sampled from $X$, $X$ assumed to be $k$ 
-dimensional with sectional curvature bounded by $K$, then by *Facundo Mémoli 
-and Guillermo Sapiro's paper* section 3.2, we have 
-
-$\mathbb{P}\left(d_{\mathcal{H}}^{\RR^d}\left(\varphi(X), f(M_n)\right)>\delta_n\right) \simeq \frac{1}{\ln n}$ as $n \uparrow \infty$, for $\delta_n \gtrsim \left(\frac{\ln n}{n}\right)^{1 / k}$
-
-and thus $d_{\mathcal{G H}}(X, f(M))$ is probablistically approaching to zero when the meash size becomes larger and larger. 
-
-\spa
-
-A computational framework is also provided, where we have the samples 
-$S_m$ with $|S_m|=m$ from $X$ and compute a proxy $d_\mathcal{F}$ 
-based upon $S_m$ and $M_n$ (see section 3.1) for 
-$d_{\mathcal{G H}}(S, f(M))$.
-
-\subsubsection{\emph{Volume error}}
-
-s generalized from the 2D case ($\sum_{\Delta t_i}\int_{t_i}^{t_{i+1}}|\gamma(t)-\overline{\gamma}(t)|dt$ where $\overline{\gamma}(t)$ is the line segment from $f(t_i)$ to $f(t_{i+1})$) we talked about in our last meeting. But this approach necessarily limits our surface to be those globally parametrized by $u$ and $v$ through $\phi$ (for otherwise we cannot directly tell which part of the surface overs the deformed triangle $f(\triangle)$ and cannot determine the domain of double integration). We may use for example the technique provided in *QuadCover paper*.
-
-
-\begin{align*}
-   d_V(X,M)=\sum_{\triangle \in M}\iint_\triangle |X(u,v)-f(\triangle) (u,v)|dudv 
-\end{align*}
-
-To evaluate the integral, we consider a finite sampling $S$ from $X$ and do the summation
-
-\begin{align*}
-    d_V(X,M)=\sum_{\triangle \in M}\sum_{p\in \operatorname{Im}(\phi|_\triangle)\cap S} |p-f(p_u,p_v)|\operatorname{vol}_p
-\end{align*}
-
-Here comes to our customized choice of the unit volume $\operatorname{vol}_p$. We may consider all of the points $\{(p_u,p_v):p\in \operatorname{Im}(\phi|_\triangle)\cap S\}$ on the triangle $\triangle$ and a nice triangulation of them on $\triangle$ and pick one small subdivided triangle neighboring $(p_u,p_v)$ to compute its area as $\operatorname{vol}_p$. We can also consider weighting all the small subdivided triangles touching $(p_u,p_v)$ and apply normalization to this weighted sum of areas of them as $\operatorname{vol}_p$.
-
-\subsubsection{\emph{Fréchet Distance}}
-
-The \emph{Fréchet Distance} between two curves $A$ and $B$ is given by the following
-procedure \cite{frechet1}: first we reparametrize both curves in terms of the same parameter
-$t$. So $A$ is given by $\alpha(t)$ and $B$ is given by $\beta(t)$. This means the
-"sliding along" the curve by changing $t$ can be fine tuned to have different
-speeds along the two curves.
-
-\spa
-
-Then, as we look at $A(\alpha(t))$ and $B(\beta(t))$, we look at the distance
-$d(A,B)$ between them. First, we force $t$ to increase monotonically, meaning
-there is no "walking backwards" as there can be no decrease in $t$, we can only
-"slide along" the curve forwards. This is expressed by the condition that
-we take $\max_t$.
-
-\spa
-
-Now, as we're looking the strictly forward slide along of these two curves,
-we'll want to look at a particular parameter (or moment in time) $t$ 
-in both curves, and only \emph{then} do we ask what is the minimum length
-between these two points along the two curves:
-
-\begin{align*}
-    Fr(A,B) &= \inf_{\alpha, \beta} \max_{t\in[0,1]} d(A(\alpha(t)), B(\beta(t)))
-\end{align*}
-
-We can use an analogy to make sense of this process \cite{frechet2}:
-Imagine a man walking his dog on a leash. The man walks on one curve, 
-$A$, while the dog follows the other curve, $B$. Both the
-man and the dog must move forward ($\max_t$). At any given
-instant of time $t$, what is their distance from each other?
-
-
-
-The \emph{decision problem} asks: is it possible to walk the curves 
-with a leash of given length $\varepsilon$? And the optimization 
-problem asks for the shortest possible leash or value of length $\varepsilon$.
-
-\spa
 
 \begin{figure}
     \centering
@@ -456,10 +324,6 @@ problem asks for the shortest possible leash or value of length $\varepsilon$.
     \caption{The Fréchet Distance is nothing but the distance between
     points that have the same parametrization.}
 \end{figure}
-
-One can construct the \emph{free-space diagram} of the associated Fréchet
-distance, which is simply the portion of space where $Fr(A,B)\le d$, that is,
-all portions where the Fréchet distance are smaller than some value $d$.
 
 \begin{figure}[h]
     \centering
@@ -469,9 +333,6 @@ all portions where the Fréchet distance are smaller than some value $d$.
     red intersection.}
 \end{figure}
 
-Now why is this all good? Well, let's take again two curves $A$ and $B$,
-but this time we make them all squiggly and intersecting:
-
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.8\linewidth]{images/frechet3.png}
@@ -479,11 +340,6 @@ but this time we make them all squiggly and intersecting:
     \label{fig:enter-label}
 \end{figure}
 
-If, based on Chamfer, we kindly ask our algorithm to approximate them, 
-he won't bother because \emph{everywhere along the two curves} they have a small
-minimum distance, set to set. Not only that, but clearly there are \emph{multiple}
-equivalent Chamfer points and more, one point can correspond to entire sections
-of the arc.
 
 \begin{figure}[h]
     \centering
@@ -492,11 +348,6 @@ of the arc.
     two squiggly curves.}
 \end{figure}
 
-The reason Fréchet becomes superior is then obvious; by admitting a parametrization
-and therefore forcing a injective map between the curves in the distance computation,
-we can get all the \emph{shape} information that was missing, at the cost of
-slightly higher compute. A detail is that for closed convex shapes $hf(A,B) = Fr(A,B)$
-\cite{frechet3}.
 
 \begin{figure}[h]
     \centering
@@ -505,19 +356,6 @@ slightly higher compute. A detail is that for closed convex shapes $hf(A,B) = Fr
     showcasing that since the parameters are all mismatched, one can get
     shape information.}
 \end{figure}
-
-Now, there is an obstacle: as said, the higher compute implicates a higher
-amount of time. For simple curves and such this is no issue, but currently
-there is no subquadratic algorithm for computing this metric, meaning we
-have certain difficulties imagining if we can bring it to 3D.
-
-\spa
-
-Another issue that may be investigated is how to produce non-conflicting
-and high fidelity parametrizations $\alpha(t)/\beta(t)$. Ideally one wants a
-"uniform", linear \emph{intrinsic} parametrization. For example, if we make
-$\alpha(t) \propto \exp t$, we risk bunching up all the points near the beginning
-or end of the curve.
 
 
 \subsection{Polyline algorithm}
