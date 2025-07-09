@@ -1,4 +1,4 @@
-[![build pdf][(https://github.com/AR0E/sgi_2025/blob/main/SGI_gitBanner.svg)
+
 
 
 
