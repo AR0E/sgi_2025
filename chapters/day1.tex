@@ -251,8 +251,40 @@ method, so that would be generally better for geometric goals.
 
 One can do a \textbf{shared normals scheme} as well, where
 multiple normals can exist in the same vertex.
+\section{Boundaries of Surfaces} \label{boundary}
+%%https://en.wikipedia.org/wiki/Manifold#Manifold_with_boundary 
 
-\section{Curvatures} \label{curvature}
+
+\begin{marginfigure}
+    \centering
+    \includegraphics[width=1.0\linewidth]{images/ClosedDisk.png}
+    \caption{The closed disk $D$ is an example of a 2-manifold with the circle as its boundary (a 1-manifold).  In fact, the boundary of any $n$-manifold is an $(n - 1)$ manifold.}
+\end{marginfigure}
+Manifolds with boundary are of particular interest in differential geometry, topology, and their applications. They allow us to study spaces that have edges or boundaries, which are essential for modeling many real-world phenomena. 
+
+A manifold with boundary can be thought of as simply a manifold with an edge(s), though we will take a moment to consider its definition more formally before returning to its practical aspects.      
+
+\begin{definition}\\
+LLet $M$ be a manifold with boundary $\partial M$, containing interior and boundary points.   Every \textbf{interior point} has a neighborhood homeomorphic to the open $n$-ball $\{(x_{1},x_{2},\dots ,x_{n})\vert \Sigma x_{i}^{2}<1\}$ 
+and every \textbf{boundary point} a neighborhood homeomorphic to the half 
+$n$-ball $\{(x_{1},x_{2},\dots ,x_{n})\vert \Sigma x_{i}^{2}<1{\text{ and }}x_{1}\geq 0\}$.
+
+
+ The boundary of the manifold $\partial M$ is the complement of the set of interior points $M_i$, with neighborhoods homeomorphic to the half $n$-ball but not to any open subset of $\R^n$.   
+\end{definition}
+
+
+
+
+\begin{marginfigure}
+    \centering
+    \includegraphics[width=1.0\linewidth]{images/MeshBoundaries.png}
+    \caption{A discretized mesh has a boundary edge and interior edges, agreeing with our concept of a manifold with boundary consisting of both boundary and interior points.}
+\end{marginfigure}
+
+
+
+\section{Curvature} \label{curvature}
 
 As discussed in \cite{discreteexterior1}, whilst curvature can be
 easily defined in the continous setting, the discrete setting has no
@@ -271,18 +303,28 @@ parametric curve $\gamma(s)$ is given by:
 
 
 This scaled bivector area, a prelude to the generalized Riemann curvature,
-\sidenote{The Riemman curvature is given as $\bf{Rie(a \wedge b)} = 
-\partial_x \wedge \partial_y P_x(a) \cdot P_y(b)$ \cite{geometric_calculus1},
-which is exactly a bivector to bivector function that maps the total
-"area deficit" or "infinitesimal rotation generators" produced by local
-spatial curvature. The deficit of the curve would exactly be the one
-produced by its intrinsic curvature.}
 gives us all the information we need, but in the discrete case, if
 we're dealing with meshes and polylines, all vertex joints have
 a "infinite" amount of curvature, and along the actual curve, none at all.
 This can be remedied by doing a "cumulative check" over the whole arclength;
 these curvature energy integrals then gives us a more \textit{global}
 rather than strictly \textit{local} definition.
+
+\sidenote{The Riemman curvature is given as $\bf{Rie(a \wedge b)} = 
+\partial_x \wedge \partial_y P_x(a) \cdot P_y(b)$ \cite{geometric_calculus1},
+which is exactly a bivector to bivector function that maps the total
+"area deficit" or "infinitesimal rotation generators" produced by local
+spatial curvature. The deficit of the curve would exactly be the one
+produced by its intrinsic curvature.}
+
+
+
+
+We have four basic curvatures to deal with, \textit{\textbf{turning angle,
+length variation, osculating circle}} and \textit{\textbf{Steiner's formula}},
+all equivalent in the continous case, but inequivalent in the discrete one.
+A complete description is in the \textit{discrete curvature 2} section of
+\cite{discreteexterior1}.
 
 \begin{marginfigure}
     \centering
@@ -291,15 +333,6 @@ rather than strictly \textit{local} definition.
     given by the reduced area of the bivector spanned by its velocity
     $(\gamma'(s))$ and acceleration $(\gamma''(s))$ vectors.}
 \end{marginfigure}
-
-
-\spa
-
-We have four basic curvatures to deal with, \textit{\textbf{turning angle,
-length variation, osculating circle}} and \textit{\textbf{Steiner's formula}},
-all equivalent in the continous case, but inequivalent in the discrete one.
-A complete description is in the \textit{discrete curvature 2} section of
-\cite{discreteexterior1}.
 
 \subsection{Turning angle}
 
