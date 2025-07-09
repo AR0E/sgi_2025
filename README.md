@@ -1,4 +1,4 @@
-[![pdf](https://github.com/AR0E/sgi_2025/blob/main/SGI_gitBanner.svg)]
+(https://github.com/AR0E/sgi_2025/blob/main/SGI_gitBanner.svg)
 
 [![build pdf][https://github.com/ToyTeX/SGI-Book_2025/actions/workflows/pdf.yml/badge.svg](https://github.com/ToyTeX/SGI-Book_2025/actions/workflows/pdf.yml)
 
